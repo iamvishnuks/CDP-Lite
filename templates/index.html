@@ -1,0 +1,191 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AWS-Dashboard</title>
+    <meta name="description" content="Sufee Admin - HTML5 Admin Template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="apple-icon.png">
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <link rel="stylesheet" href="../static/assets/css/normalize.css">
+    <link rel="stylesheet" href="../static/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/assets/css/themify-icons.css">
+    <link rel="stylesheet" href="../static/assets/css/flag-icon.min.css">
+    <link rel="stylesheet" href="../static/assets/css/cs-skin-elastic.css">
+    <!-- <link rel="stylesheet" href="assets/css/bootstrap-select.less"> -->
+    <link rel="stylesheet" href="../static/assets/scss/style.css">
+    <link href="../static/assets/css/lib/vector-map/jqvmap.min.css" rel="stylesheet">
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
+
+</head>
+<body>
+
+    <!-- Right Panel -->
+
+    <div id="right-panel" class="right-panel">
+
+
+        <!-- Header-->
+
+        <div class="content mt-3">
+
+
+            <div class="col-lg-3 col-md-6">
+                <div class="social-box twitter">
+                    <i class=""><img src="../static/images/ec2.png" height="30%" width="30%"></img></i>
+                    <ul>
+                        <li>
+                            <strong><span class="count">{{ running }}</span></strong>
+                            <span>Running</span>
+                        </li>
+                        <li>
+                            <strong><span class="count">{{ instance_count }}</span></strong>
+                            <span>Total</span>
+                        </li>
+                    </ul>
+                </div>
+                <!--/social-box-->
+            </div><!--/.col-->
+
+
+            <div class="col-lg-3 col-md-6">
+                <div class="social-box google-plus">
+                    <i class=""><img src="../static/images/ec2.png" height="30%" width="30%"></img></i>
+                    <ul>
+                        <li>
+                            <strong><span class="count">{{ stopped }}</span></strong>
+                            <span>Stopped</span>
+                        </li>
+                        <li>
+                            <strong><span class="count">{{ instance_count }}</span></strong>
+                            <span>Total</span>
+                        </li>
+                    </ul>
+                </div>
+                <!--/social-box-->
+            </div><!--/.col-->
+
+
+            <div class="col-lg-3 col-md-6">
+                <div class="social-box twitter">
+                    <i class=""><img src="../static/images/s3.png" height="30%" width="30%"></img></i>
+                    <ul>
+                        <li>
+                            <strong><span class="count">{{ s3_count }}</span></strong>
+                            <span>S3 Buckets</span>
+                        </li>
+                        <li>
+                            <strong><span class="count">500</span></strong>
+                            <span>Soft limit</span>
+                        </li>
+                    </ul>
+                </div>
+                <!--/social-box-->
+            </div><!--/.col-->
+
+
+            <div class="col-lg-3 col-md-6">
+                <div class="social-box google-plus">
+                    <i class=""><img src="../static/images/elb.png" height="30%" width="30%" style="padding: 10px"></img></i>
+                    <ul>
+                        <li>
+                            <strong><span class="count">94</span></strong>
+                            <span>Load balancers</span>
+                        </li>
+                        <li>
+                            <strong><span class="count">92</span></strong>
+                            <span>Soft limit</span>
+                        </li>
+                    </ul>
+                </div>
+                <!--/social-box-->
+            </div><!--/.col-->
+
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+
+
+                        </div><!--/.row-->
+                       <div class="card-header">
+                            <strong class="card-title">Instance Details</strong>
+                        </div>
+                        <div class="card-body">
+                  <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Instance Name</th>
+                        <th>IP</th>
+                        <th>CPU utilization</th>
+                        <th>Disk reads</th>
+                      </tr>
+                    </thead>
+                    <tbody id="instancedetails">
+
+
+                    </tbody>
+                  </table>
+                        </div>
+                    </div>
+                </div>
+
+                </div>
+            </div>
+
+
+
+        </div> <!-- .content -->
+    </div><!-- /#right-panel -->
+
+    <!-- Right Panel -->
+
+    <script src="../static/assets/js/vendor/jquery-2.1.4.min.js"></script>
+
+    <script src="../static/assets/js/plugins.js"></script>
+    <script src="../static/assets/js/main.js"></script>
+    <script src="">
+
+    <script src="../static/assets/js/lib/chart-js/Chart.bundle.js"></script>
+    <script src="../static/assets/js/dashboard.js"></script>
+    <script src="../static/assets/js/widgets.js"></script>
+    <script src="../static/assets/js/lib/vector-map/jquery.vmap.js"></script>
+    <script src="../static/assets/js/lib/vector-map/jquery.vmap.min.js"></script>
+    <script src="../static/assets/js/lib/vector-map/jquery.vmap.sampledata.js"></script>
+    <script src="../static/assets/js/lib/vector-map/country/jquery.vmap.world.js"></script>
+    <script src="../static/assets/js/jquery.min.js"></script>
+    <script>
+
+        var ins;
+
+
+  setInterval(function() {
+      $.ajax({
+      type: "GET",
+      url: "/get_instances",
+    })
+      .success(function( instances ) {
+          //ins=JSON.parse(instances);
+          //console.log(instances[0].Instances[0].InstanceId);
+          var ins="";
+          for(var i in instances){
+            ins+="<tr> <td>"+ instances[i].Instances[0].InstanceId+ "</td><td>"+ instances[i].Instances[0].PublicIpAddress+"</td><td>"+
+                instances[i].Instances[0].CPU_data+"</td><td>"+ instances[i].Instances[0].DiskReads+"</td></tr>";
+          }
+          $('#instancedetails').html(ins)
+      });
+}, 3006 * 60);
+    </script>
+
+</body>
+</html>
