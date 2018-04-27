@@ -51,13 +51,13 @@ $.ajax({
           for(var i in p2_tickets) {
               if(p2_tickets[i]['Time left']=='Breached'){
                   color = 'badge-danger';
-              }else if(p2_tickets[i]['Time left']<60){
-                  color = 'badge-danger';
               }else if(p2_tickets[i]['Time left']<120){
-                  color = 'badge-warning';
-              }else if(p2_tickets[i]['Time left']<180){
-                  color = 'badge-primary';
+                  color = 'badge-danger';
               }else if(p2_tickets[i]['Time left']<240){
+                  color = 'badge-warning';
+              }else if(p2_tickets[i]['Time left']<360){
+                  color = 'badge-primary';
+              }else if(p2_tickets[i]['Time left']<480){
                   color = 'badge-success';
               };
               var Minutes = p2_tickets[i]['Time left'];
@@ -76,11 +76,11 @@ $.ajax({
                   color = 'badge-danger';
               }else if(p3_tickets[i]['Time left']<60){
                   color = 'badge-danger';
-              }else if(p3_tickets[i]['Time left']<120){
+              }else if(p3_tickets[i]['Time left']<720){
                   color = 'badge-warning';
-              }else if(p3_tickets[i]['Time left']<180){
+              }else if(p3_tickets[i]['Time left']<1440){
                   color = 'badge-primary';
-              }else if(p3_tickets[i]['Time left']<240){
+              }else if(p3_tickets[i]['Time left']<2880){
                   color = 'badge-success';
               };
               var Minutes = p3_tickets[i]['Time left'];
@@ -98,11 +98,11 @@ $.ajax({
                   color = 'badge-danger';
               }else if(p4_tickets[i]['Time left']<60){
                   color = 'badge-danger';
-              }else if(p4_tickets[i]['Time left']<120){
+              }else if(p4_tickets[i]['Time left']<1080){
                   color = 'badge-warning';
-              }else if(p4_tickets[i]['Time left']<180){
+              }else if(p4_tickets[i]['Time left']<2160){
                   color = 'badge-primary';
-              }else if(p4_tickets[i]['Time left']<240){
+              }else if(p4_tickets[i]['Time left']<4320){
                   color = 'badge-success';
               };
               var Minutes = p4_tickets[i]['Time left'];

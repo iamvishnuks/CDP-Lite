@@ -1,10 +1,16 @@
-from flask import render_template, Flask, jsonify
+from flask import render_template, Flask, jsonify, request, redirect, flash, url_for
 from datetime import datetime, timedelta
 import pandas as pd
+from werkzeug.utils import secure_filename
+import os
 
 app = Flask(__name__)
-
-file = 'static/Open Ticket Status 27_04_2018.xlsx'
+secret_key = 'heheheehehehe'
+file = 'static/Pfizer_tickets.xlsx'
+ufile = 'Pfizer_tickets.xlsx'
+app.config['UPLOAD_FOLDER'] = '/home/vicz/Desktop/aws-admin/CDP-Lite/static/'
+app.config['SECRET_KEY'] = secret_key
+ALLOWED_EXTENSIONS = ['xlsx']
 
 
 def convert_timedelta(t):
@@ -69,6 +75,7 @@ def category_count(x):
     category['count'] = [snmp, s3, roles, policies, keys, backup, sg]
     category['label'] = ['SNMP', 'S3', 'Role', 'Policies', 'Keys', 'Backup', 'SG']
     return category
+
 
 @app.route('/tickets')
 def ticket_details():
@@ -151,6 +158,32 @@ def index():
     p4 = len(low)
     print([p1,p2,p3,p4])
     return render_template('index.html', title='Home', p1_count=p1, p2_count=p2, p3_count=p3, p4_count=p4)
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route('/upload', methods = ['POST', 'GET'])
+@app.route('/uploads', methods = ['POST', 'GET'])
+def upload():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], ufile))
+            return redirect(url_for('index'))
+    return render_template('upload.html')
 
 
 if __name__ == '__main__':
