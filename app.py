@@ -1,47 +1,156 @@
 from flask import render_template, Flask, jsonify
-import boto3
 from datetime import datetime, timedelta
 import pandas as pd
 
 app = Flask(__name__)
 
+file = 'static/Open Ticket Status 27_04_2018.xlsx'
+
+
+def convert_timedelta(t):
+    days, seconds, microseconds = t.days, t.seconds, t.microseconds
+    tot_seconds = (microseconds/1000000) + seconds
+    tot_minutes = tot_seconds/60 + days*1440
+    return tot_minutes
+
+
+def get_daywise_count(x):
+    p1lst = []
+    p2lst = []
+    p3lst = []
+    p4lst = []
+    day_list = []
+    for i in x['Open Time']:
+        day_list.append(i.day)
+    day_list = list(set(day_list))
+    for j in day_list:
+        p1, p2, p3, p4 = 0, 0, 0, 0
+        for i in x.index.values:
+            if x['Open Time'][i].day == j:
+                if x['Priority'][i] == 'CRITICAL':
+                    p1 = p1 + 1
+                elif x['Priority'][i] == 'HIGH':
+                    p2 = p2 + 1
+                elif x['Priority'][i] == 'MEDIUM':
+                    p3 = p3 + 1
+                elif x['Priority'][i] == 'LOW':
+                    p4 = p4 + 1
+        p1lst.append(p1)
+        p2lst.append(p2)
+        p3lst.append(p3)
+        p4lst.append(p4)
+    return {'Days': day_list, 'P1': p1lst, 'P2': p2lst, 'P3': p3lst, 'P4': p4lst}
+
+
+def category_count(x):
+    snmp = 0
+    s3 = 0
+    roles = 0
+    policies = 0
+    keys = 0
+    backup = 0
+    sg = 0
+    category = {}
+    for i in x.index.values:
+        if 'SNMP' in x['Brief Description'][i]:
+            snmp = snmp + 1
+        elif 's3' in x['Brief Description'][i].lower():
+            s3 = s3 + 1
+        elif 'BACKUP' in x['Brief Description'][i]:
+            backup = backup + 1
+        elif 'role' in x['Brief Description'][i].lower():
+            roles = roles + 1
+        elif 'polic' in x['Brief Description'][i].lower():
+            policies = policies + 1
+        elif 'key' in x['Brief Description'][i].lower():
+            keys = keys + 1
+        elif 'security group' in x['Brief Description'][i].lower():
+            sg = sg + 1
+    category['count'] = [snmp, s3, roles, policies, keys, backup, sg]
+    category['label'] = ['SNMP', 'S3', 'Role', 'Policies', 'Keys', 'Backup', 'SG']
+    return category
 
 @app.route('/tickets')
 def ticket_details():
-    file = 'static/opentickets_priority.xlsx'
     x = pd.read_excel(file)
+    x['Open Time'] = pd.to_datetime(x['Open Time'])
     medium = x[x['Priority'].str.match('MEDIUM')]
     low = x[x['Priority'].str.match('LOW')]
-    high = x[x['Priority'].str.match('High')]
-    p1_time = timedelta(hours=4)
+    high = x[x['Priority'].str.match('HIGH')]
+    critical = x[x['Priority'].str.match('CRITICAL')]
+    now=datetime.now()
+    p1_time = timedelta(hours=3)
     p2_time = timedelta(hours=8)
+    p3_time = timedelta(days=3)
+    p4_time = timedelta(days=4)
     medium_tickets = {}
     low_tickets = {}
-    high_tickets= {}
+    high_tickets = {}
+    critical_tickets = {}
+
+    try:
+        for i in critical.index.values:
+            if now-critical['Open Time'][i] > p1_time:
+                time_left='Breached'
+            else:
+                time_left = p1_time - (now - critical['Open Time'][i])
+                time_left = convert_timedelta(time_left)
+            critical_tickets[critical['Incident '][i]] = {'Open Time':critical['Open Time'][i], 'Time left':str(time_left)}
+
+    except Exception as e:
+        medium_tickets['Status'] = 0
     try:
         for i in medium.index.values:
-            medium_tickets[medium['Incident '][i]] = medium['Open time'][i]
+            if now-medium['Open Time'][i] > p3_time:
+                time_left='Breached'
+            else:
+                time_left = p1_time - (now - medium['Open Time'][i])
+                time_left = convert_timedelta(time_left)
+            medium_tickets[medium['Incident '][i]] = {'Open Time':medium['Open Time'][i], 'Time left': str(time_left)}
+
     except Exception as e:
         medium_tickets['Status'] = 0
 
     try:
         for i in low.index.values:
-            low_tickets[low['Incident '][i]] = low['Open time'][i]
+            if now-low['Open Time'][i] > p4_time:
+                time_left = 'Breached'
+            else:
+                time_left = p4_time - (now - low['Open Time'][i])
+                time_left = convert_timedelta(time_left)
+            low_tickets[low['Incident '][i]] = {'Open Time':low['Open Time'][i], 'Time left': str(time_left)}
+
     except Exception as e:
         low_tickets['Status'] = 0
     try:
         for i in high.index.values:
-            high_tickets[high['Incident '][i]] = high['Open time'][i]
+            if now-high['Open Time'][i] > p2_time:
+                time_left = 'Breached'
+            else:
+                time_left = p2_time - (now - high['Open Time'][i])
+                time_left = convert_timedelta(time_left)
+            high_tickets[high['Incident '][i]] = {'Open Time':high['Open Time'][i], 'Time left': str(time_left)}
+
     except Exception as e:
         high_tickets['Status'] = 0
-
-    response={'tickets':[medium_tickets,low_tickets,high_tickets]}
+    response = {'tickets': [critical_tickets, high_tickets, medium_tickets, low_tickets], 'ticket_count': get_daywise_count(x), 'category': category_count(x)}
     return jsonify(response)
+
 
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('index.html', title='Home', num=60)
+    x = pd.read_excel(file)
+    medium = x[x['Priority'].str.match('MEDIUM')]
+    low = x[x['Priority'].str.match('LOW')]
+    high = x[x['Priority'].str.match('HIGH')]
+    critical = x[x['Priority'].str.match('CRITICAL')]
+    p1 = len(critical)
+    p2 = len(high)
+    p3 = len(medium)
+    p4 = len(low)
+    print([p1,p2,p3,p4])
+    return render_template('index.html', title='Home', p1_count=p1, p2_count=p2, p3_count=p3, p4_count=p4)
 
 
 if __name__ == '__main__':

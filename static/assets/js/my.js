@@ -1,19 +1,20 @@
+
 ( function ( $ ) {
     "use strict";
 
-   
+
     //Sales chart
     var ctx = document.getElementById( "sales-chart" );
     ctx.height = 150;
     var myChart = new Chart( ctx, {
         type: 'line',
         data: {
-            labels: [ "3", "4", "5", "6", "7", "8", "9" ],
+            labels: days,
             type: 'line',
             defaultFontFamily: 'Montserrat',
             datasets: [ {
                 label: "P1",
-                data: [ 0, 30, 10, 120, 50, 63, 10 ],
+                data: p1,
                 backgroundColor: 'transparent',
                 borderColor: 'rgba(220,53,69,0.75)',
                 borderWidth: 3,
@@ -23,18 +24,7 @@
                 pointBackgroundColor: 'rgba(220,53,69,0.75)',
                     }, {
                 label: "P2",
-                data: [ 0, 50, 40, 80, 40, 79, 120 ],
-                backgroundColor: 'transparent',
-                borderColor: 'rgba(40,167,69,0.75)',
-                borderWidth: 3,
-                pointStyle: 'circle',
-                pointRadius: 5,
-                pointBorderColor: 'transparent',
-                pointBackgroundColor: 'rgba(40,167,69,0.75)',
-                    },
-		   {
-                label: "P3",
-                data: [ 0, 5, 20, 90, 10, 69, 10 ],
+                data: p2,
                 backgroundColor: 'transparent',
                 borderColor: '#ffc107',
                 borderWidth: 3,
@@ -43,9 +33,9 @@
                 pointBorderColor: 'transparent',
                 pointBackgroundColor: '#ffc107',
                     },
-		{
-                label: "P4",
-                data: [ 0, 68, 22, 56, 77, 88, 120 ],
+		   {
+                label: "P3",
+                data: p3,
                 backgroundColor: 'transparent',
                 borderColor: '#007bff',
                 borderWidth: 3,
@@ -53,6 +43,17 @@
                 pointRadius: 5,
                 pointBorderColor: 'transparent',
                 pointBackgroundColor: '#007bff',
+                    },
+		{
+                label: "P4",
+                data: p4,
+                backgroundColor: 'transparent',
+                borderColor: '#28a745',
+                borderWidth: 3,
+                pointStyle: 'circle',
+                pointRadius: 5,
+                pointBorderColor: 'transparent',
+                pointBackgroundColor: '#28a745',
                     } ]
         },
         options: {
@@ -113,11 +114,11 @@
     var myChart = new Chart( ctx, {
         type: 'bar',
         data: {
-            labels: [ "Backup", "S3", "Server down", "SG's", "Roles", "Policies", "Access key" ],
+            labels: category_label,
             datasets: [
                 {
                     label: "Ticket volume",
-                    data: [ 65, 59, 80, 81, 56, 55, 40 ],
+                    data: category_count,
                     borderColor: "rgba(0, 123, 255, 0.9)",
                     borderWidth: "0",
                     backgroundColor: "rgba(0, 123, 255, 0.5)"
@@ -134,46 +135,6 @@
             }
         }
     } );
-
-    //radar chart
-    var ctx = document.getElementById( "radarChart" );
-    ctx.height = 160;
-    var myChart = new Chart( ctx, {
-        type: 'radar',
-        data: {
-            labels: [ [ "Eating", "Dinner" ], [ "Drinking", "Water" ], "Sleeping", [ "Designing", "Graphics" ], "Coding", "Cycling", "Running" ],
-            datasets: [
-                {
-                    label: "My First dataset",
-                    data: [ 65, 59, 66, 45, 56, 55, 40 ],
-                    borderColor: "rgba(0, 123, 255, 0.6)",
-                    borderWidth: "1",
-                    backgroundColor: "rgba(0, 123, 255, 0.4)"
-                            },
-                {
-                    label: "My Second dataset",
-                    data: [ 28, 12, 40, 19, 63, 27, 87 ],
-                    borderColor: "rgba(0, 123, 255, 0.7",
-                    borderWidth: "1",
-                    backgroundColor: "rgba(0, 123, 255, 0.5)"
-                            }
-                        ]
-        },
-        options: {
-            legend: {
-                position: 'top'
-            },
-            scale: {
-                ticks: {
-                    beginAtZero: true
-                }
-            }
-        }
-    } );
-
-
-
-
 
 
 } )( jQuery );
