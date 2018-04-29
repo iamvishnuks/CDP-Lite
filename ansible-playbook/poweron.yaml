@@ -1,0 +1,29 @@
+- name : Configure CDPLite on your server
+  become: true
+  become_user: root
+  become_method: sudo
+  hosts: all
+  tasks:
+  - name: Install python-pip
+    apt:
+      name: python-pip
+      state: latest
+  - name: Install git
+    apt:
+      name: git
+      state: latest
+  - name: Download application from github
+    git:
+      repo: 'https://github.com/vishnu-ks/CDP-Lite.git'
+      dest: '/home/ubuntu/CDP-Lite'
+      clone: yes
+      update: no
+  - name: python-packages
+    pip:
+      name: "{{ item }}"
+    with_items:
+      - flask
+      - pandas
+      - xlrd
+  - name: start-app
+    command: 'python /home/ubuntu/CDP-Lite/app.py'
